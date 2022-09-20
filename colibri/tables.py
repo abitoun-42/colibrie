@@ -1,7 +1,7 @@
 from fitz import Rect, TEXTFLAGS_DICT, TEXT_PRESERVE_IMAGES
 
-from src.geometry import Point
-from src.core import Table, Cell, Rotation
+from colibri.geometry import Point
+from colibri.core import Table, Cell, Rotation
 from ailist import AIList
 
 

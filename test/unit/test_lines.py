@@ -2,8 +2,8 @@ import fitz
 import pytest
 import os
 
-from src.geometry import Point
-from src.lines import (
+from colibri.geometry import Point
+from colibri.lines import (
     get_lines_fragmented,
     get_horizontal_fragmented_lines,
     get_vertical_fragmented_lines,

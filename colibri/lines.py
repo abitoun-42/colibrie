@@ -2,12 +2,12 @@ import math
 
 from ailist import AIList
 
-from src.utils import (
+from colibri.utils import (
     RangeMap,
     closest_value
 )
 
-from src.geometry import Rect, Point
+from colibri.geometry import Rect, Point
 
 
 def get_lines_fragmented(page):

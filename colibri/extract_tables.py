@@ -1,17 +1,17 @@
 import random
 import fitz
 
-from src.tables import (
+from colibri.tables import (
     create_table,
     process_table,
     get_tables_candidates
 )
 
-from src.intersection import (
+from colibri.intersection import (
     get_intersection_between_horizontal_and_vertical_lines
 )
 
-from src.lines import (
+from colibri.lines import (
     get_lines_fragmented,
     get_horizontal_fragmented_lines,
     get_vertical_fragmented_lines,
