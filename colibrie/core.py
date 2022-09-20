@@ -1,6 +1,6 @@
 import pandas as pd
 
-from colibri.utils import (
+from colibrie.utils import (
     get_text_in_cell,
     extract_text_from_spans,
 )

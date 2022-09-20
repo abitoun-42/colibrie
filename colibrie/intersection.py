@@ -1,9 +1,9 @@
-from colibri.utils import (
+from colibrie.utils import (
     intersect,
     adjust_line_lenght,
 )
 
-from colibri.geometry import Point
+from colibrie.geometry import Point
 
 from copy import deepcopy
 

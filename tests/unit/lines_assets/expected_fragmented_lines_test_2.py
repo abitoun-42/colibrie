@@ -1,4 +1,4 @@
-from colibri.geometry import Point
+from colibrie.geometry import Point
 
 expected_fragmented_lines_test_2 = [(Point(71, 43), Point(71, 130)),
                                     (Point(411, 458), Point(411, 476)),

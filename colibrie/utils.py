@@ -1,5 +1,5 @@
 from math import inf
-from colibri.geometry import Point, Rect
+from colibrie.geometry import Point, Rect
 import numpy as np
 
 
