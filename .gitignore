@@ -6,6 +6,15 @@ __pycache__/
 # C extensions
 *.so
 
+# Image file
+*.png
+
+# Jupyterlab file
+*.ipynb
+.idea/
+.DS_Store
+
+
 # Distribution / packaging
 .Python
 build/
