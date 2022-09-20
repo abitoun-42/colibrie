@@ -1,9 +1,14 @@
 # Colibri
 Colibri is a blazing fast repository to extract tables from PDF files 
 
+# Installation
+```
+pip install colibrie
+```
+
 # Usage
 ```
-from colibri.extract_tables import extract_table
+from colibrie.extract_tables import extract_table
 
 tables = extract_table('pdf_path')
 ```
