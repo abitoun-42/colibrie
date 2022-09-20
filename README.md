@@ -1,5 +1,5 @@
-# Colibri
-Colibri is a blazing fast repository to extract tables from PDF files 
+# Colibrie
+Colibrie is a blazing fast repository to extract tables from PDF files 
 
 # Installation
 ```
