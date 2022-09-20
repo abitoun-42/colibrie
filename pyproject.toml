@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "colibri"
+version = "1.0"
+authors = [
+  { name="Alexandre Bitoun", email="alexandre.bitoun@outlook.fr" },
+]
+description = "Colibri is a blazing fast repository to extract tables from PDF files"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/abitoun-42/colibri"
+"Bug Tracker" = "https://github.com/abitoun-42/colibri/issues"
