@@ -6,7 +6,6 @@ from src.utils import (
 )
 
 from enum import Enum
-from pprint import pprint
 
 
 class TableList(object):
@@ -89,24 +88,25 @@ class Table(object):
                 for cell in row:
                     if cell:
                         cell.row_size, cell.col_size = cell.col_size, cell.row_size
-                        
+
     def match_row_size_sum(self):
         # to permit the transposition of cells in order to rotate the table if needed
         # we append None value to match the size of sum(row_size) for each row
         try:
-            for col_index in range(len(max(self.cells, key=len))): # this row get the maximum lenght of inner list in cells 2d array
+            for col_index in range(
+                    len(max(self.cells, key=len))):  # this row get the maximum lenght of inner list in cells 2d array
                 for row_index, row in enumerate(self.cells):
                     cell = row[col_index]
                     if cell:
                         for i in range(1, cell.row_size):
-                            self.cells[row_index + i].insert(col_index, None) 
+                            self.cells[row_index + i].insert(col_index, None)
         except IndexError:
             pass
 
     def to_html(self):
         import random
-        #transposed_cells = list(zip(*self.cells)) # 180 degree turn
-        #transposed_cells = list(zip(*[reversed(row) for row in self.cells])) # 270 degree turn
+        # transposed_cells = list(zip(*self.cells)) # 180 degree turn
+        # transposed_cells = list(zip(*[reversed(row) for row in self.cells])) # 270 degree turn
         html = '<table>'
         for row in self.cells:
             html += "<tr>"
@@ -114,7 +114,7 @@ class Table(object):
                 if cell:
                     rowspan = f'rowspan={cell.row_size}'
                     colspan = f'colspan={cell.col_size}'
-                    #color = "%06x" % random.randint(0, 0xFFFFFF)
+                    # color = "%06x" % random.randint(0, 0xFFFFFF)
                     html += f'<td style="text-align:center;" {rowspan} {colspan}>{cell.text}</td>'
             html += "</tr>"
         html += "</table>"
@@ -152,9 +152,8 @@ class Cell(object):
 
     def __repr__(self):
         return repr(self.text)
-    
+
 
 class Rotation(Enum):
-    unrotated = (1.0,0.0)
-    rotated_90 = (0.0,-1.0)
-    
+    unrotated = (1.0, 0.0)
+    rotated_90 = (0.0, -1.0)

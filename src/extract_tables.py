@@ -2,13 +2,10 @@ import random
 import fitz
 
 from src.tables import (
-    #get_valid_tables_candidates,
     create_table,
     process_table,
     get_tables_candidates
 )
-
-from copy import deepcopy
 
 from src.intersection import (
     get_intersection_between_horizontal_and_vertical_lines
@@ -20,15 +17,12 @@ from src.lines import (
     get_vertical_fragmented_lines,
     remove_overlaping_horizontal_lines,
     remove_overlaping_vertical_lines,
-    # merge_vertical_lines,
-    # merge_horizontal_lines,
     generate_missing_horizontal_lines,
     generate_missing_vertical_lines,
     normalize_vertical_lines,
     normalize_horizontal_lines,
 )
 
-from pprint import pprint
 
 def extract_tables(filepath, debug_mode=False, preserve_span=True):
     """
@@ -41,7 +35,7 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
     page_layout_images = []
 
     doc = fitz.Document(filepath)
-    #doc.scrub(redact_images=1,clean_pages=False)
+    # doc.scrub(redact_images=1,clean_pages=False)
     final_text = ""
     padding = 0
 
@@ -75,15 +69,15 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
         #################### NORMALIZE Y X COORDINATE ############################
 
         vertical_lines = normalize_vertical_lines(vertical_lines, horizontal_lines)
-        
+
         horizontal_lines = normalize_horizontal_lines(vertical_lines, horizontal_lines)
 
         ########################################################################
-        
+
         #################### GET TABLES CANDIDATES #############################
         tables_candidates = get_tables_candidates(vertical_lines, horizontal_lines)
         ########################################################################
-        
+
         for table_candidate in tables_candidates:
 
             vertical_lines = get_vertical_fragmented_lines(table_candidate)
@@ -91,16 +85,16 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
             horizontal_lines = get_horizontal_fragmented_lines(table_candidate)
 
             ########################## CREATE UNEXISTING MISSING LINE ###########
-            
+
             distinct_y_lst = set([point.y for lines in vertical_lines for point in lines])
             distinct_x_lst = set([point.x for lines in horizontal_lines for point in lines])
-            
+
             if not distinct_x_lst or not distinct_y_lst:
                 continue
 
             range_y = (min(distinct_y_lst), max(distinct_y_lst))
             range_x = (min(distinct_x_lst), max(distinct_x_lst))
-            
+
             # If the table does not meet the condition of a minimum size
             # we assume it is a bad table
             if (range_y[1] - range_y[0]) <= 20 and (range_x[1] - range_x[0]) <= 50:
@@ -134,22 +128,22 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
 
             if not len(intersections) >= 6:
                 continue
-            #valid_table_candidate_lst = get_valid_tables_candidates(intersections)
+            # valid_table_candidate_lst = get_valid_tables_candidates(intersections)
 
-            #if valid_table_candidate_lst:
+            # if valid_table_candidate_lst:
 
             #########################################################################
-            
+
             ###################### CREATE TABLE LIST ################################
             table = create_table(intersections, horizontal_lines, vertical_lines)
-            
+
             #################################FILL TABLE##############################
-            
+
             table = process_table(page, table, preserve_span, intersections)
-            
+
             if not table:
                 continue
-            
+
             #########################################################################
 
             if debug_mode:
@@ -162,11 +156,11 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
                     for cell in row:
                         if cell:
                             pass
-                            #shape.draw_rect(cell.rect)
-                            #shape.finish(color=(0, 0, 1))
-                            #shape.commit()
+                            # shape.draw_rect(cell.rect)
+                            # shape.finish(color=(0, 0, 1))
+                            # shape.commit()
                 # DRAW INTERSECTIONS POINT
-                color=(1, 0, 0)
+                color = (1, 0, 0)
                 for intersection in table.intersections:
                     shape.draw_circle(intersection, radius=2)
                     # shape.draw_rect(rect)

@@ -58,9 +58,6 @@ class Point:
             return False
         return len(p) == 2 and bool(self - p) is False
 
-    def __abs__(self):
-        return math.sqrt(self.x * self.x + self.y * self.y)
-
     def __sub__(self, p):
         if hasattr(p, "__float__"):
             return Point(self.x - p, self.y - p)

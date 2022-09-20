@@ -7,19 +7,14 @@ from src.utils import (
     closest_value
 )
 
-from copy import copy
-
-from src.intersection import get_intersection_between_horizontal_and_vertical_lines
 from src.geometry import Rect, Point
-
-from pprint import pprint
 
 
 def get_lines_fragmented(page):
     lines_fragmented = []
 
     drawings = page.get_cdrawings()
-    
+
     for drawing in drawings:
         # If there is a curve in the drawing, we considere it not valid for a rectangle
         for part in drawing['items']:
@@ -63,8 +58,8 @@ def get_horizontal_fragmented_lines(lines_fragmented):
             math.isclose(line[0].y, line[1].y, abs_tol=5) and line[0].x != line[1].x]
 
 
-def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst, range_x, range_y):
-    
+def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst, range_x,
+                                      range_y):
     if not horizontal_lines or not vertical_lines:
         return horizontal_lines
 
@@ -72,7 +67,7 @@ def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct
     # GET MIN MAX WIDTH HORIZONTAL LIMIT OF THE TABLE
 
     y_aligned_point = {y: [] for y in distinct_y_lst}
-    
+
     if not y_aligned_point:
         return horizontal_lines
 
@@ -81,12 +76,11 @@ def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct
         for point in l:
             range_map[point.y].append(point)
 
-
     # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for y, points in range_map._dictionary.items():
         if len(points) > 1:
-            #point_a = Point(range_x[0], points[0].y)
-            #point_b = Point(range_x[1], points[-1].y)
+            # point_a = Point(range_x[0], points[0].y)
+            # point_b = Point(range_x[1], points[-1].y)
             point_a = Point(points[0].x, points[0].y)
             point_b = Point(points[-1].x, points[-1].y)
             horizontal_lines.append((point_a, point_b))
@@ -101,7 +95,7 @@ def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x
         return vertical_lines
 
     x_aligned_point = {x: [] for x in distinct_x_lst}
-    
+
     if not x_aligned_point:
         return vertical_lines
 
@@ -110,12 +104,11 @@ def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x
         for point in l:
             range_map[point.x].append(point)
 
-
     # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for x, points in range_map._dictionary.items():
         if len(points) > 1:
-            #point_a = Point(points[0].x, range_y[0])
-            #point_b = Point(points[-1].x, range_y[1])
+            # point_a = Point(points[0].x, range_y[0])
+            # point_b = Point(points[-1].x, range_y[1])
             point_a = Point(points[0].x, points[0].y)
             point_b = Point(points[-1].x, points[-1].y)
             vertical_lines.append((point_a, point_b))
@@ -212,8 +205,10 @@ def normalize_vertical_lines(vertical_lines, horizontal_lines):
     for vertical_line in vertical_lines:
         closest_y0 = closest_value(distinct_horizontal_y, vertical_line[0].y)
         closest_y1 = closest_value(distinct_horizontal_y, vertical_line[1].y)
-        vertical_line[0].y = closest_y0 if math.isclose(vertical_line[0].y, closest_y0, abs_tol=3) else vertical_line[0].y
-        vertical_line[1].y = closest_y1 if math.isclose(vertical_line[1].y, closest_y1, abs_tol=3) else vertical_line[1].y
+        vertical_line[0].y = closest_y0 if math.isclose(vertical_line[0].y, closest_y0, abs_tol=3) else vertical_line[
+            0].y
+        vertical_line[1].y = closest_y1 if math.isclose(vertical_line[1].y, closest_y1, abs_tol=3) else vertical_line[
+            1].y
 
     return vertical_lines
 
@@ -232,7 +227,9 @@ def normalize_horizontal_lines(vertical_lines, horizontal_lines):
     for horizontal_line in horizontal_lines:
         closest_x0 = closest_value(distinct_vertical_x, horizontal_line[0].x)
         closest_x1 = closest_value(distinct_vertical_x, horizontal_line[1].x)
-        horizontal_line[0].x = closest_x0 if math.isclose(horizontal_line[0].x, closest_x0, abs_tol=3) else horizontal_line[0].x
-        horizontal_line[1].x = closest_x1 if math.isclose(horizontal_line[1].x, closest_x1, abs_tol=3) else horizontal_line[1].x
+        horizontal_line[0].x = closest_x0 if math.isclose(horizontal_line[0].x, closest_x0, abs_tol=3) else \
+        horizontal_line[0].x
+        horizontal_line[1].x = closest_x1 if math.isclose(horizontal_line[1].x, closest_x1, abs_tol=3) else \
+        horizontal_line[1].x
 
     return horizontal_lines

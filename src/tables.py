@@ -2,7 +2,6 @@ from fitz import Rect, TEXTFLAGS_DICT, TEXT_PRESERVE_IMAGES
 
 from src.geometry import Point
 from src.core import Table, Cell, Rotation
-from pprint import pprint
 from ailist import AIList
 
 

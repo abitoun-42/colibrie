@@ -2,7 +2,6 @@ from math import inf
 from src.geometry import Point, Rect
 import numpy as np
 
-from pprint import pprint
 
 def is_table_rotated(data):
     total_span = 0
