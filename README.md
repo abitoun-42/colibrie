@@ -1,4 +1,6 @@
 # Colibrie
+ [![image](https://img.shields.io/pypi/v/colibrie.svg)](https://pypi.org/project/colibrie/) [![image](https://img.shields.io/pypi/l/colibrie.svg)](https://pypi.org/project/colibrie/)
+
 Colibrie is a blazing fast repository to extract tables from PDF files 
 
 # Installation

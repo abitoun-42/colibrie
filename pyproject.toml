@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "colibrie"
-version = "1.1.1"
+version = "1.1.2"
 description = "Colibrie is a blazing fast repository to extract tables from PDF files"
 authors = ["Alexandre Bitoun <alexandre.bitoun@outlook.fr>"]
 readme = "README.md"
