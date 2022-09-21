@@ -1,9 +1,13 @@
 import pandas as pd
+import io
+import random
 
 from colibrie.utils import (
     get_text_in_cell,
     extract_text_from_spans,
 )
+
+from PIL import Image, ImageDraw
 
 from enum import Enum
 
@@ -73,10 +77,13 @@ class Table(object):
 
         self.horizontal_lines = horizontal_lines
         self.vertical_lines = vertical_lines
+
         self.row = {row: index for index, row in enumerate(sorted(self.intersections_df.y.unique().tolist()))}
         self.col = {col: index for index, col in enumerate(sorted(self.intersections_df.x.unique().tolist()))}
 
         self.cells = [[] for r in range(len(self.row) - 1)]
+
+        self.debug = Debug(self)
 
     def set_rotation(self):
         if self.rotation == Rotation.rotated_90.value:
@@ -114,7 +121,6 @@ class Table(object):
                 if cell:
                     rowspan = f'rowspan={cell.row_size}'
                     colspan = f'colspan={cell.col_size}'
-                    # color = "%06x" % random.randint(0, 0xFFFFFF)
                     html += f'<td style="text-align:center;" {rowspan} {colspan}>{cell.text}</td>'
             html += "</tr>"
         html += "</table>"
@@ -157,3 +163,123 @@ class Cell(object):
 class Rotation(Enum):
     unrotated = (1.0, 0.0)
     rotated_90 = (0.0, -1.0)
+
+
+class Debug:
+    def __init__(self, table: Table, img_bytes: bytes = None):
+        self.table = table
+        self.image = img_bytes
+
+    def show_cells(self, as_bytes: bool = True, image: bytes = None):
+        if not self.image:
+            print("Please ensure that the debug mode is activated")
+            return
+
+        with Image.open(io.BytesIO(image if image else self.image)) as img:
+            draw = ImageDraw.Draw(img)
+
+            for row in self.table.cells:
+                for cell in row:
+                    if cell:
+                        color = (
+                        int(random.uniform(30, 255)), int(random.uniform(30, 255)), int(random.uniform(30, 255)))
+                        draw.rectangle(
+                            [cell.rect.x0,
+                             cell.rect.y0,
+                             cell.rect.x1,
+                             cell.rect.y1],
+                            outline=color,
+                            width=2
+                        )
+
+            if as_bytes:
+                imgByteArr = io.BytesIO()
+                img.save(imgByteArr, format=img.format)
+                imgByteArr = imgByteArr.getvalue()
+
+                return imgByteArr
+            else:
+                img.show()
+
+    def show_border(self, as_bytes: bool = True, image: bytes = None):
+        if not self.image:
+            print("Please ensure that the debug mode is activated")
+            return
+
+        with Image.open(io.BytesIO(image if image else self.image)) as img:
+            draw = ImageDraw.Draw(img)
+
+            draw.rectangle(
+                [self.table.rect.x0,
+                 self.table.rect.y0,
+                 self.table.rect.x1,
+                 self.table.rect.y1],
+                outline=(0, 128, 0),
+                width=2
+            )
+
+            if as_bytes:
+                imgByteArr = io.BytesIO()
+                img.save(imgByteArr, format=img.format)
+                imgByteArr = imgByteArr.getvalue()
+
+                return imgByteArr
+            else:
+                img.show()
+
+    def show_intersections(self, as_bytes: bool = True, image: bytes = None):
+        if not self.image:
+            print("Please ensure that the debug mode is activated")
+            return
+
+        with Image.open(io.BytesIO(image if image else self.image)) as img:
+            draw = ImageDraw.Draw(img)
+
+            for intersection in self.table.intersections:
+                tl = (intersection.x - 3, intersection.y - 3)
+                br = (intersection.x + 3, intersection.y + 3)
+                coordinate = [tl, br]
+                draw.ellipse(
+                    coordinate,
+                    outline=(255, 0, 0),
+                    width=2
+                )
+
+            if as_bytes:
+                imgByteArr = io.BytesIO()
+                img.save(imgByteArr, format=img.format)
+                imgByteArr = imgByteArr.getvalue()
+
+                return imgByteArr
+            else:
+                img.show()
+
+    def show_lines(self, as_bytes: bool = True, image: bytes = None):
+        if not self.image:
+            print("Please ensure that the debug mode is activated")
+            return
+
+        with Image.open(io.BytesIO(image if image else self.image)) as img:
+            draw = ImageDraw.Draw(img)
+
+            lines = self.table.horizontal_lines + self.table.vertical_lines
+
+            for line in lines:
+                color = (int(random.uniform(30, 255)), int(random.uniform(30, 255)), int(random.uniform(30, 255)))
+                draw.line(
+                    [line[0].x,
+                     line[0].y,
+                     line[1].x,
+                     line[1].y],
+                    fill=color,
+                    width=2
+                )
+
+            if as_bytes:
+                imgByteArr = io.BytesIO()
+                img.save(imgByteArr, format=img.format)
+                imgByteArr = imgByteArr.getvalue()
+
+                return imgByteArr
+            else:
+                img.show()
