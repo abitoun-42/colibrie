@@ -12,7 +12,7 @@ Colibrie is a blazing fast tool to extract tables from PDFs
   - Pandas Dataframe.
   - HTML.
 
-### benchmark :
+### Benchmark :
 Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popular library to extract tables from PDF) and Colibrie
 <table>
   <thead>
