@@ -124,8 +124,6 @@ class Table(object):
             pass
 
     def to_html(self):
-        import random
-
         # transposed_cells = list(zip(*self.cells)) # 180 degree turn
         # transposed_cells = list(zip(*[reversed(row) for row in self.cells])) # 270 degree turn
         html = "<table>"
@@ -142,7 +140,17 @@ class Table(object):
         return html
 
     def to_df(self):
-        return pd.read_html(self.to_html())[0]
+        data = []
+        for row in self.cells:
+            row_data = []
+            for cell in row:
+                if cell:
+                    row_data.append(cell.text)
+                else:
+                    row_data.append(pd.NA)
+            data.append(row_data)
+
+        return pd.DataFrame(data)
 
 
 class Cell(object):
