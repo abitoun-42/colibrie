@@ -19,11 +19,13 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
     <tr>
         <th colspan="2"></th>
         <th colspan="4">Tables extracted</th>
+        <th colspan="2"></th>
     </tr>
     <tr>
         <th colspan="2">Times in second</th>
         <th colspan="2">camelot</th>
         <th colspan="2">colibrie</th>
+        <th colspan="2"></th>
     </tr>
     <tr style="text-align: right;">
       <th>camelot</th>
@@ -45,7 +47,7 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
       <td>1</td>
       <td>0</td>
       <td>1</td>
-      <td>file_1</td>
+      <td><a href="https://github.com/abitoun-42/colibrie/files/9620468/boc_20220014_0001_p000_extract_2.pdf">small pdf</a></td>
     </tr>
     <tr>
       <td>5.95</td>
@@ -55,7 +57,7 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
       <td>4</td>
       <td>0</td>
       <td>11</td>
-      <td>file_1</td>
+      <td><a href="https://github.com/abitoun-42/colibrie/files/9620506/boc_20210034_0000_0003.pdf">medium pdf</a></td>
     </tr>
     <tr>
       <td>105.00</td>
@@ -65,17 +67,17 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
       <td>62</td>
       <td>0</td>
       <td>167</td>
-      <td>file_1</td>
+      <td><a href="https://github.com/abitoun-42/colibrie/files/9620511/boc_20220014_0001_p000.pdf">big pdf</a></td>
     </tr>
     <tr>
       <td>182.00</td>
       <td>0.69000</td>
       <td>175</td>
-      <td>0</td>
+      <td>1</td>
       <td>177</td>
       <td>0</td>
       <td>269</td>
-      <td>file_1</td>
+      <td><a href="https://github.com/abitoun-42/colibrie/files/9620515/boc_20220025_0001_p000.pdf">giant pdf</a></td>
     </tr>
   </tbody>
 </table>
