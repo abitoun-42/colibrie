@@ -12,7 +12,7 @@ def is_table_rotated(data):
                 for span in column:
                     total_span += 1
                     # print(span['dir'])
-                    if span['dir'] != (1, 0):
+                    if span["dir"] != (1, 0):
                         rotated_span += 1
             # column = column_text
 
@@ -26,7 +26,9 @@ def is_table_rotated(data):
 def extract_text_from_spans(spans):
     text = ""
     for span in spans:
-        text += span["text"] + '<br>\n'  # TODO REMOVE <br> which is here for visual purpose now
+        text += (
+            span["text"] + "<br>\n"
+        )  # TODO REMOVE <br> which is here for visual purpose now
 
     return text
 
@@ -58,8 +60,10 @@ class RangeMap:
         self._generate_tree()
 
     def _generate_tree(self):
-        range_mapping = [(((p + c) / 2, (c + n) / 2), self._dictionary[c])
-                         for p, c, n in self._iterate_keys()]
+        range_mapping = [
+            (((p + c) / 2, (c + n) / 2), self._dictionary[c])
+            for p, c, n in self._iterate_keys()
+        ]
         self._tree = RangeMap.Node(range_mapping)
 
     def _iterate_keys(self):
@@ -71,7 +75,7 @@ class RangeMap:
             assert range_mapping
             middle = len(range_mapping) // 2
             (self.lower, self.upper), self.value = range_mapping[middle]
-            before, after = range_mapping[:middle], range_mapping[middle + 1:]
+            before, after = range_mapping[:middle], range_mapping[middle + 1 :]
             self.before = RangeMap.Node(before) if before else None
             self.after = RangeMap.Node(after) if after else None
 
@@ -105,9 +109,7 @@ def adjust_line_lenght(lines, direction, revert=False):
             point_a.y -= 3 if not revert else -3
             point_b.y += 3 if not revert else -3
 
-            adjusted_lines.append(
-                (point_a, point_b)
-            )
+            adjusted_lines.append((point_a, point_b))
     elif direction == "horizontal":
         for line in lines:
             point_a = line[0]
@@ -115,9 +117,7 @@ def adjust_line_lenght(lines, direction, revert=False):
             point_a.x -= 3 if not revert else -3
             point_b.x += 3 if not revert else -3
 
-            adjusted_lines.append(
-                (point_a, point_b)
-            )
+            adjusted_lines.append((point_a, point_b))
     else:
         return adjusted_lines
 
@@ -143,20 +143,27 @@ def get_text_in_cell(rect, text):
 
     # skip block / lines that are not relevant because no intersection with the cell Rect to speed up execution times
     # by 10%
-    for block in text.get('blocks'):
-        bbox = block['bbox']
-        if is_rectangle_overlap([bbox[0], bbox[1], bbox[2], bbox[3]], [rect.x0, rect.y0, rect.x1, rect.y1]):
+    for block in text.get("blocks"):
+        bbox = block["bbox"]
+        if is_rectangle_overlap(
+            [bbox[0], bbox[1], bbox[2], bbox[3]], [rect.x0, rect.y0, rect.x1, rect.y1]
+        ):
 
-            for line in block.get('lines'):
-                bbox = line['bbox']
-                if is_rectangle_overlap([bbox[0], bbox[1], bbox[2], bbox[3]], [rect.x0, rect.y0, rect.x1, rect.y1]):
+            for line in block.get("lines"):
+                bbox = line["bbox"]
+                if is_rectangle_overlap(
+                    [bbox[0], bbox[1], bbox[2], bbox[3]],
+                    [rect.x0, rect.y0, rect.x1, rect.y1],
+                ):
 
-                    for span in line.get('spans'):
-                        bbox = span['bbox']
+                    for span in line.get("spans"):
+                        bbox = span["bbox"]
 
-                        if is_rectangle_contained([rect.x0, rect.y0, rect.x1, rect.y1],
-                                                  [bbox[0], bbox[1], bbox[2], bbox[3]]):
-                            span['dir'] = line['dir']
+                        if is_rectangle_contained(
+                            [rect.x0, rect.y0, rect.x1, rect.y1],
+                            [bbox[0], bbox[1], bbox[2], bbox[3]],
+                        ):
+                            span["dir"] = line["dir"]
                             text_in_cell.append(span)
 
     return text_in_cell
