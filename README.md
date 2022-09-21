@@ -3,7 +3,7 @@
 
 Colibrie is a blazing fast tool to extract tables from PDFs 
 
-##Why Colibrie?
+## Why Colibrie?
 
 - **Blazing fast**: Colibrie is faster by multiple order of magnitude than any solution existing in his category
 - **Simple**: Colibrie is plug & play, just give it a PDF, it will give you tables from it
