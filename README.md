@@ -5,12 +5,80 @@ Colibrie is a blazing fast tool to extract tables from PDFs
 
 ## Why Colibrie?
 
-- :rocket: **Efficient**: Colibrie is faster by multiple order of magnitude than any solution existing in his category
+- :rocket: **Efficient**: Colibrie is faster by multiple order of magnitude than any actual existing solution
 - :sparkles: **Fidel visual**: Colibrie can provide 1:1 HTML representation of any tables it'll find
 - :books: **Reliable**: Colibri will find every valid tables without exception if the PDF is compatible with the core principle of Colibrie
 - :memo: **Output**: Each table can be export into to multiple formats, which include : 
   - Pandas Dataframe.
   - HTML.
+
+### benchmark :
+Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popular library to extract tables from PDF) and Colibrie
+<table>
+  <thead>
+    <tr>
+        <th colspan="2"></th>
+        <th colspan="4">Tables extracted</th>
+    </tr>
+    <tr>
+        <th colspan="2">Times in second</th>
+        <th colspan="2">camelot</th>
+        <th colspan="2">colibrie</th>
+    </tr>
+    <tr style="text-align: right;">
+      <th>camelot</th>
+      <th>colibrie</th>
+      <th>valid</th>
+      <th>false positive</th>
+      <th>valid</th>
+      <th>false positive</th>
+      <th>pages count</th>
+      <th>pdf file</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0.53</td>
+      <td>0.00545</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>file_1</td>
+    </tr>
+    <tr>
+      <td>5.95</td>
+      <td>0.02100</td>
+      <td>4</td>
+      <td>0</td>
+      <td>4</td>
+      <td>0</td>
+      <td>11</td>
+      <td>file_1</td>
+    </tr>
+    <tr>
+      <td>105.00</td>
+      <td>0.21900</td>
+      <td>62</td>
+      <td>1</td>
+      <td>62</td>
+      <td>0</td>
+      <td>167</td>
+      <td>file_1</td>
+    </tr>
+    <tr>
+      <td>182.00</td>
+      <td>0.69000</td>
+      <td>175</td>
+      <td>0</td>
+      <td>177</td>
+      <td>0</td>
+      <td>269</td>
+      <td>file_1</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Installation
 
