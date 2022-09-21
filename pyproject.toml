@@ -1,23 +1,25 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "colibrie"
-version = "1.0"
-authors = [
-  { name="Alexandre Bitoun", email="alexandre.bitoun@outlook.fr" },
-]
+version = "1.1.1"
 description = "Colibrie is a blazing fast repository to extract tables from PDF files"
+authors = ["Alexandre Bitoun <alexandre.bitoun@outlook.fr>"]
 readme = "README.md"
-license = { file="LICENSE" }
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+license = "AGPL-3.0-only"
+repository="https://github.com/abitoun-42/colibrie"
+include = [
+    "LICENSE",
 ]
 
-[project.urls]
-"Homepage" = "https://github.com/abitoun-42/colibrie"
-"Bug Tracker" = "https://github.com/abitoun-42/colibrie/issues"
+[tool.poetry.dependencies]
+python = ">=3.8"
+Cython = "^0.29.32"
+PyMuPDF = "^1.20.2"
+numpy = "^1.23.3"
+pandas = "^1.5.0"
+Pillow = "^9.2.0"
+ailist = "^1.0.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

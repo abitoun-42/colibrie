@@ -75,7 +75,6 @@ def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct
         for point in l:
             range_map[point.y].append(point)
 
-    # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for y, points in range_map._dictionary.items():
         if len(points) > 1:
             point_a = Point(points[0].x, points[0].y)
@@ -101,7 +100,6 @@ def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x
         for point in l:
             range_map[point.x].append(point)
 
-    # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for x, points in range_map._dictionary.items():
         if len(points) > 1:
             point_a = Point(points[0].x, points[0].y)
