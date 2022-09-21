@@ -58,13 +58,9 @@ def get_horizontal_fragmented_lines(lines_fragmented):
             math.isclose(line[0].y, line[1].y, abs_tol=5) and line[0].x != line[1].x]
 
 
-def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst, range_x,
-                                      range_y):
+def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst):
     if not horizontal_lines or not vertical_lines:
         return horizontal_lines
-
-    # Maybe we can just brutforce and recreate all the line without check
-    # GET MIN MAX WIDTH HORIZONTAL LIMIT OF THE TABLE
 
     y_aligned_point = {y: [] for y in distinct_y_lst}
 
@@ -76,11 +72,8 @@ def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct
         for point in l:
             range_map[point.y].append(point)
 
-    # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for y, points in range_map._dictionary.items():
         if len(points) > 1:
-            # point_a = Point(range_x[0], points[0].y)
-            # point_b = Point(range_x[1], points[-1].y)
             point_a = Point(points[0].x, points[0].y)
             point_b = Point(points[-1].x, points[-1].y)
             horizontal_lines.append((point_a, point_b))
@@ -90,7 +83,7 @@ def generate_missing_horizontal_lines(horizontal_lines, vertical_lines, distinct
     return horizontal_lines
 
 
-def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst, range_x, range_y):
+def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x_lst, distinct_y_lst):
     if not horizontal_lines or not vertical_lines:
         return vertical_lines
 
@@ -104,11 +97,8 @@ def generate_missing_vertical_lines(horizontal_lines, vertical_lines, distinct_x
         for point in l:
             range_map[point.x].append(point)
 
-    # WE HAD TO USE COPY BECAUSE OF BINARY TREE STRUCTURE WHICH PASS THE REFERENCE VALUE OTHERWISE
     for x, points in range_map._dictionary.items():
         if len(points) > 1:
-            # point_a = Point(points[0].x, range_y[0])
-            # point_b = Point(points[-1].x, range_y[1])
             point_a = Point(points[0].x, points[0].y)
             point_b = Point(points[-1].x, points[-1].y)
             vertical_lines.append((point_a, point_b))
