@@ -82,9 +82,16 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
   </tbody>
 </table>
 
+## Current limitation
+
+- Colibrie only works with text-based PDFs and not scanned documents. (As Tabula [explains](https://github.com/tabulapdf/tabula#why-tabula), "If you can click and drag to select text in your table in a PDF viewer, then your PDF is text-based".)
+- For the moment Colibrie doesn't work on PDF with tables that has no structural lines (like [this one](https://github.com/abitoun-42/colibrie/files/9627754/budget_2014-15.pdf) or [this one](https://github.com/abitoun-42/colibrie/files/9627800/m27.pdf)
+) but it can handle a few missing lines (like [this one](https://github.com/abitoun-42/colibrie/files/9627853/spreadsheet_no_bounding_frame.pdf) or [this one](https://github.com/abitoun-42/colibrie/files/9627858/boc_20210034_0000_0003_extract.pdf))
+
 ## Installation
 
 ### using source
+
 ```
 pip install poetry
 
