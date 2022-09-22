@@ -5,10 +5,10 @@ Colibrie is a blazing fast tool to extract tables from PDFs
 
 ## Why Colibrie?
 
-- :rocket: **Efficient**: Colibrie is faster by multiple order of magnitude than any actual existing solution
-- :sparkles: **Fidel visual**: Colibrie can provide 1:1 HTML representation of any tables it'll find
-- :books: **Reliable**: Colibri will find every valid tables without exception if the PDF is compatible with the core principle of Colibrie
-- :memo: **Output**: Each table can be export into to multiple formats, which include : 
+- **Efficient**: Colibrie is faster by multiple order of magnitude than any actual existing solution
+- **Fidel visual**: Colibrie can provide 1:1 HTML representation of any tables it'll find
+- **Reliable**: Colibri will find every valid tables without exception if the PDF is compatible with the core principle of Colibrie
+- **Output**: Each table can be export into to multiple formats, which include : 
   - Pandas Dataframe.
   - HTML.
 
