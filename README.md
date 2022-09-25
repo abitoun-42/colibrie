@@ -1,4 +1,4 @@
-<p align="center"><img src="https://user-images.githubusercontent.com/57960922/192136956-f3c9057b-21cf-4037-8bbd-448f17e79c76.png"></p>
+<p align="center"><img width=300 src="https://user-images.githubusercontent.com/57960922/192136956-f3c9057b-21cf-4037-8bbd-448f17e79c76.png"></p>
 
 # Colibrie
 
