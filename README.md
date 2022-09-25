@@ -1,4 +1,7 @@
+<p align="center"><img src="https://user-images.githubusercontent.com/57960922/192136956-f3c9057b-21cf-4037-8bbd-448f17e79c76.png"></p>
+
 # Colibrie
+
  [![image](https://img.shields.io/pypi/v/colibrie.svg)](https://pypi.org/project/colibrie/) [![image](https://img.shields.io/pypi/l/colibrie.svg)](https://pypi.org/project/colibrie/)
 
 Colibrie is a blazing fast tool to extract tables from PDFs 
