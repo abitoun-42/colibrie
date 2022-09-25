@@ -17,7 +17,7 @@ from colibrie.lines import (
 )
 
 
-def extract_tables(filepath, debug_mode=False, preserve_span=True):
+def extract_tables(filepath, debug_mode=False):
     """
     :param: preserve_span: bool
         give a possibility to speed_up the execution
@@ -99,7 +99,7 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
                 horizontal_lines, vertical_lines, distinct_x_lst
             )
 
-            ########################################################################
+            #######################################################################
 
             ################### GET INTERSECTIONS #################################
 
@@ -119,7 +119,7 @@ def extract_tables(filepath, debug_mode=False, preserve_span=True):
 
             #################################FILL TABLE##############################
 
-            table = process_table(page, table, preserve_span, intersections)
+            table = process_table(page, table, intersections)
 
             if not table:
                 continue

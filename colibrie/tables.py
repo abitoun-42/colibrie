@@ -80,7 +80,7 @@ def create_table(intersections, horizontal_lines, vertical_lines):
     return table
 
 
-def process_table(page, table, preserve_span, intersections_info):
+def process_table(page, table, intersections_info):
     """
     tl => top left
     tr => top right
@@ -92,14 +92,9 @@ def process_table(page, table, preserve_span, intersections_info):
     rotated_span[Rotation.unrotated.value] = 0
     rotated_span[Rotation.rotated_90.value] = 0
 
-    if preserve_span:
-        text = page.get_text(
-            "dict", flags=TEXTFLAGS_DICT & ~TEXT_PRESERVE_IMAGES, clip=table.rect
-        )
-    else:
-        textpage = page.get_textpage(
-            flags=TEXTFLAGS_DICT & ~TEXT_PRESERVE_IMAGES, clip=table.rect
-        )
+    text = page.get_text(
+        "dict", flags=TEXTFLAGS_DICT & ~TEXT_PRESERVE_IMAGES, clip=table.rect
+    )
 
     # Reconstruct intersection point group by lines height as
     # list of list containing intersections point
@@ -144,15 +139,12 @@ def process_table(page, table, preserve_span, intersections_info):
                 col_size=table.col[br["x"]] - table.col[tl["x"]],
             )
 
-            if preserve_span:
-                cell.get_text(text)
-                for span in cell.spans:
-                    try:
-                        rotated_span[span["dir"]] += 1
-                    except KeyError:
-                        print(f"missing key for rotation {span['dir']}")
-            else:
-                cell.text = page.get_textbox(cell.rect, textpage=textpage)
+            cell.get_text(text)
+            for span in cell.spans:
+                try:
+                    rotated_span[span["dir"]] += 1
+                except KeyError:
+                    print(f"missing key for rotation {span['dir']}")
 
             table.cells[row_index].append(cell)
 
@@ -220,17 +212,13 @@ def find_intersection_correspondance(
                 bl_intersection_line = intersections_info[bl["x"], bl["y"]]
                 br_intersection_line = intersections_info[br["x"], br["y"]]
 
+                # if bl and br point are on the same horizontal_line
+                # if tl and bl point are on the same vertical_line
+                # if tr and br point are on the same vertical_line
                 if (
                     bl_intersection_line[1] == br_intersection_line[1]
-                    and tl_intersection_line[  # if bl and br point are on the same horizontal_line
-                        0
-                    ]
-                    == bl_intersection_line[0]
-                    and tr_intersection_line[  # if tl and bl point are on the same vertical_line
-                        0
-                    ]
-                    == br_intersection_line[0]
-                    # if tr and br point are on the same vertical_line
+                    and tl_intersection_line[0] == bl_intersection_line[0]
+                    and tr_intersection_line[0] == br_intersection_line[0]
                 ):
                     return bl, br
                 else:

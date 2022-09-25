@@ -245,3 +245,21 @@ def normalize_horizontal_lines(vertical_lines, horizontal_lines):
         )
 
     return horizontal_lines
+
+
+def adjust_line_lenght(lines, direction, revert=False):
+
+    if direction == "vertical":
+        for line in lines:
+            point_a = line[0]
+            point_b = line[1]
+            point_a.y -= 3 if not revert else -3
+            point_b.y += 3 if not revert else -3
+
+    elif direction == "horizontal":
+        for line in lines:
+            point_a = line[0]
+            point_b = line[1]
+            point_a.x -= 3 if not revert else -3
+            point_b.x += 3 if not revert else -3
+
