@@ -1,5 +1,9 @@
 class Rect:
-    def __init__(self, x0, y0, x1, y1):
+    """
+    Class Object to represent a Rectangle coordinates
+    """
+
+    def __init__(self, x0: float, y0: float, x1: float, y1: float):
         self.x0, self.y0, self.x1, self.y1 = x0, y0, x1, y1
 
     def __getitem__(self, i):
@@ -13,7 +17,11 @@ class Rect:
 
 
 class Point:
-    def __init__(self, x, y):
+    """
+    Class Object to represent a Point coordinates
+    """
+
+    def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
