@@ -29,4 +29,3 @@ def is_rectangle_overlap(r1, r2):
 
 def is_rectangle_contained(r1, r2):
     return r1[0] <= r2[0] <= r2[2] <= r1[2] and r1[1] <= r2[1] <= r2[3] <= r1[3]
-

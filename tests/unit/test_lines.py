@@ -3,12 +3,12 @@ import pytest
 import os
 
 from colibrie.geometry import Point
-from colibrie.lines import (
-    get_lines_fragmented,
-    get_horizontal_fragmented_lines,
-    get_vertical_fragmented_lines,
-    remove_overlaping_vertical_lines,
-    remove_overlaping_horizontal_lines,
+from colibrie.segments import (
+    get_segments,
+    get_horizontal_segments,
+    get_vertical_segments,
+    merge_vertical_segment,
+    merge_horizontal_segments,
 )
 
 from tests.unit.lines_assets.expected_fragmented_lines_test_1 import (
@@ -41,7 +41,7 @@ parent_path = os.path.dirname(os.path.dirname(__file__))
 
 class TestLines:
     @pytest.mark.parametrize(
-        "fragmented_lines_expected, path",
+        "expected_segments, path",
         [
             (expected_fragmented_lines_test_1, f"{parent_path}/assets/test_1.pdf"),
             (expected_fragmented_lines_test_2, f"{parent_path}/assets/test_2.pdf"),
@@ -53,16 +53,16 @@ class TestLines:
             (expected_fragmented_lines_test_empty, f"{parent_path}/assets/empty.pdf"),
         ],
     )
-    def test_get_lines_fragmented(self, fragmented_lines_expected, path):
+    def test_get_segments(self, expected_segments, path):
         doc = fitz.Document(path)
 
         for page in doc:
-            lines = get_lines_fragmented(page)
+            segments = get_segments(page)
 
-            assert lines == fragmented_lines_expected
+            assert segments == expected_segments
 
-    def test_get_horizontal_fragmented_lines(self):
-        lines = [
+    def test_get_horizontal_segment(self):
+        segments = [
             (Point(70, 10), Point(70, 100)),
             (Point(70, 10), Point(70, 50)),
             (Point(70, 20), Point(100, 20)),
@@ -70,35 +70,35 @@ class TestLines:
             (Point(10, 20), Point(150, 20)),
         ]
 
-        expected_lines = [
+        expected_segments = [
             (Point(70, 20), Point(100, 20)),
             (Point(7, 20), Point(40, 20)),
             (Point(10, 20), Point(150, 20)),
         ]
 
-        result = get_horizontal_fragmented_lines(lines)
+        result = get_horizontal_segments(segments)
 
-        assert result == expected_lines
+        assert result == expected_segments
 
-    def test_get_vertical_fragmented_lines(self):
-        lines = [
+    def test_get_vertical_segments(self):
+        segments = [
             (Point(70, 10), Point(70, 100)),
             (Point(70, 10), Point(70, 50)),
             (Point(7, 20), Point(40, 20)),
             (Point(10, 20), Point(150, 20)),
         ]
 
-        expected_lines = [
+        expected_segments = [
             (Point(70, 10), Point(70, 100)),
             (Point(70, 10), Point(70, 50)),
         ]
 
-        result = get_vertical_fragmented_lines(lines)
+        result = get_vertical_segments(segments)
 
-        assert result == expected_lines
+        assert result == expected_segments
 
-    def test_remove_overlapping_vertical_lines(self):
-        lines = [
+    def test_merge_vertical_segments(self):
+        segments = [
             (Point(70, 10), Point(70, 100)),
             (Point(70, 10), Point(70, 50)),
             (Point(70, 20), Point(70, 30)),
@@ -106,17 +106,17 @@ class TestLines:
             (Point(70, 150), Point(70, 300)),
         ]
 
-        expected_lines = [
+        expected_segments = [
             (Point(70, 10), Point(70, 140)),
             (Point(70, 150), Point(70, 300)),
         ]
 
-        result = remove_overlaping_vertical_lines(lines)
+        result = merge_vertical_segment(segments)
 
-        assert result == expected_lines
+        assert result == expected_segments
 
-    def test_remove_overlapping_horizontal_lines(self):
-        lines = [
+    def test_merge_horizontal_segments(self):
+        segments = [
             (Point(70, 20), Point(100, 20)),
             (Point(7, 20), Point(40, 20)),
             (Point(10, 20), Point(150, 20)),
@@ -124,11 +124,11 @@ class TestLines:
             (Point(200, 20), Point(400, 20)),
         ]
 
-        expected_lines = [
+        expected_segments = [
             (Point(5, 20), Point(150, 20)),
             (Point(200, 20), Point(400, 20)),
         ]
 
-        result = remove_overlaping_horizontal_lines(lines)
+        result = merge_horizontal_segments(segments)
 
-        assert result == expected_lines
+        assert result == expected_segments

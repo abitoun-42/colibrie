@@ -4,16 +4,15 @@ from colibrie.tables import create_table, process_table, get_tables_candidates
 
 from colibrie.intersection import get_intersection_between_horizontal_and_vertical_lines
 
-from colibrie.lines import (
-    get_lines_fragmented,
-    get_horizontal_fragmented_lines,
-    get_vertical_fragmented_lines,
-    remove_overlaping_horizontal_lines,
-    remove_overlaping_vertical_lines,
-    generate_missing_horizontal_lines,
-    generate_missing_vertical_lines,
-    normalize_vertical_lines,
-    normalize_horizontal_lines,
+from colibrie.segments import (
+    get_segments,
+    get_horizontal_segments,
+    get_vertical_segments,
+    merge_horizontal_segments,
+    merge_vertical_segment,
+    generate_missing_horizontal_segments,
+    generate_missing_vertical_segments,
+    normalize_segments,
 )
 
 
@@ -31,53 +30,48 @@ def extract_tables(filepath, debug_mode=False):
     tables_lst = []
 
     for page in doc:
+        # Always set the page rotation to 0 to prevent rotation from previous update of the PDF
+        page.set_rotation(0)
 
-        ####################### GET LINE ######################################
+        # GET SEGMENTS #
 
-        lines_fragmented = get_lines_fragmented(page)
+        segments = get_segments(page)
 
-        vertical_lines = get_vertical_fragmented_lines(lines_fragmented)
+        vertical_segments = get_vertical_segments(segments)
 
-        horizontal_lines = get_horizontal_fragmented_lines(lines_fragmented)
+        horizontal_segments = get_horizontal_segments(segments)
 
-        #######################################################################
+        # REMOVE OVERLAPPING SEGMENTS #
 
-        ################## REMOVE OVERLAPING LINES ############################
+        vertical_segments = merge_vertical_segment(vertical_segments)
 
-        vertical_lines = remove_overlaping_vertical_lines(vertical_lines)
+        horizontal_segments = merge_horizontal_segments(horizontal_segments)
 
-        horizontal_lines = remove_overlaping_horizontal_lines(horizontal_lines)
-
-        #######################################################################
-
-        if not vertical_lines or not horizontal_lines:
+        if not vertical_segments or not horizontal_segments:
             continue
 
-        #################### NORMALIZE Y X COORDINATE ############################
+        # NORMALIZE SEGMENT COORDINATE #
 
-        vertical_lines = normalize_vertical_lines(vertical_lines, horizontal_lines)
+        normalize_segments(vertical_segments, horizontal_segments)
 
-        horizontal_lines = normalize_horizontal_lines(vertical_lines, horizontal_lines)
-
-        ########################################################################
-
-        #################### GET TABLES CANDIDATES #############################
-        tables_candidates = get_tables_candidates(vertical_lines, horizontal_lines)
-        ########################################################################
+        # GET TABLES CANDIDATES #
+        tables_candidates = get_tables_candidates(
+            vertical_segments, horizontal_segments
+        )
 
         for table_candidate in tables_candidates:
 
-            vertical_lines = get_vertical_fragmented_lines(table_candidate)
+            vertical_segments = get_vertical_segments(table_candidate)
 
-            horizontal_lines = get_horizontal_fragmented_lines(table_candidate)
+            horizontal_segments = get_horizontal_segments(table_candidate)
 
-            ########################## CREATE UNEXISTING MISSING LINE ###########
+            # GENERATE MISSING SEGMENTS #
 
-            distinct_y_lst = set(
-                [point.y for lines in vertical_lines for point in lines]
+            distinct_y_lst = list(
+                set([point.y for lines in vertical_segments for point in lines])
             )
-            distinct_x_lst = set(
-                [point.x for lines in horizontal_lines for point in lines]
+            distinct_x_lst = list(
+                set([point.x for lines in horizontal_segments for point in lines])
             )
 
             if not distinct_x_lst or not distinct_y_lst:
@@ -91,40 +85,34 @@ def extract_tables(filepath, debug_mode=False):
             if (range_y[1] - range_y[0]) <= 20 and (range_x[1] - range_x[0]) <= 50:
                 continue
 
-            horizontal_lines = generate_missing_horizontal_lines(
-                horizontal_lines, vertical_lines, distinct_y_lst
+            horizontal_segments = generate_missing_horizontal_segments(
+                horizontal_segments, vertical_segments
             )
 
-            vertical_lines = generate_missing_vertical_lines(
-                horizontal_lines, vertical_lines, distinct_x_lst
+            vertical_segments = generate_missing_vertical_segments(
+                horizontal_segments, vertical_segments
             )
 
-            #######################################################################
-
-            ################### GET INTERSECTIONS #################################
+            # GET INTERSECTIONS #
 
             intersections = get_intersection_between_horizontal_and_vertical_lines(
-                horizontal_lines, vertical_lines
+                horizontal_segments, vertical_segments
             )
 
+            # If there is not a least 6 intersections point, it mean there is less than 2 cells
+            # and it is not a valid table
             if not len(intersections) >= 6:
                 continue
 
-            #########################################################################
+            # CREATE TABLE LIST #
+            table = create_table(intersections, horizontal_segments, vertical_segments)
 
-            ###################### CREATE TABLE LIST ################################
-            table = create_table(intersections, horizontal_lines, vertical_lines)
-
-            #########################################################################
-
-            #################################FILL TABLE##############################
+            # FILL TABLE #
 
             table = process_table(page, table, intersections)
 
             if not table:
                 continue
-
-            #########################################################################
 
             if debug_mode:
                 pix = page.get_pixmap()

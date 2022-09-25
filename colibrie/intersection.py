@@ -1,5 +1,5 @@
 from colibrie.geometry_operation import intersect
-from colibrie.lines import adjust_line_lenght
+from colibrie.segments import adjust_segments_length
 
 
 def get_intersection_between_horizontal_and_vertical_lines(
@@ -7,8 +7,8 @@ def get_intersection_between_horizontal_and_vertical_lines(
 ):
     intersections = {}
 
-    adjust_line_lenght(vertical_lines, "vertical")
-    adjust_line_lenght(horizontal_lines, "horizontal")
+    adjust_segments_length(vertical_lines, "vertical")
+    adjust_segments_length(horizontal_lines, "horizontal")
 
     for horizontal_line in horizontal_lines:
         for vertical_line in vertical_lines:
@@ -18,7 +18,7 @@ def get_intersection_between_horizontal_and_vertical_lines(
             if intersection_point:
                 intersections[intersection_point] = [vertical_line, horizontal_line]
 
-    adjust_line_lenght(vertical_lines, "vertical", revert=True)
-    adjust_line_lenght(horizontal_lines, "horizontal", revert=True)
+    adjust_segments_length(vertical_lines, "vertical", revert=True)
+    adjust_segments_length(horizontal_lines, "horizontal", revert=True)
 
     return intersections

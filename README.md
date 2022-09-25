@@ -64,7 +64,7 @@ Some number to compare [Camelot](https://github.com/camelot-dev/camelot) (a popu
       <td>0.21900</td>
       <td>62</td>
       <td>1</td>
-      <td>62</td>
+      <td>61</td>
       <td>0</td>
       <td>167</td>
       <td><a href="https://github.com/abitoun-42/colibrie/files/9620511/boc_20220014_0001_p000.pdf">big pdf</a></td>
