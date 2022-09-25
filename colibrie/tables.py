@@ -1,13 +1,50 @@
-from fitz import Rect, TEXTFLAGS_DICT, TEXT_PRESERVE_IMAGES
+from typing import Union
+
+from fitz import Rect, TEXTFLAGS_DICT, TEXT_PRESERVE_IMAGES, Page
 
 from colibrie.geometry import Point
 from colibrie.core import Table, Cell, Rotation
 from ailist import AIList
 
 
-def get_tables_candidates(vertical_lines, horizontal_lines):
+def get_tables_candidates(
+    vertical_segments: list[tuple[Point, Point]],
+    horizontal_segments: list[tuple[Point, Point]],
+) -> list[list[tuple[Point, Point]]]:
+    """
+    This function group segments by vertical interval then by horizontal interval
+    to extract distinct group of segments from each other
+
+    for example in this situation :
+
+    +---------+
+    |  Col1   |
+    +---------+
+    | Value 1 |
+    +---------+
+
+            +---------+---------+------+
+            |  Col1   |  Col2   | Col3 |
+            +---------+---------+------+
+            | Value 1 | Value 2 |  123 |
+            | Value 2 |         |      |
+            +---------+---------+------+
+
+        Page 93
+        ------
+
+    it'll result in 3 distinct tables candidates
+    (2 to be exact because the line below page number
+    will not be a valid table candidate)
+
+    :param vertical_segments: list of vertical segments
+    :param horizontal_segments: list of horizontal segments
+    :return: List of list of segments, where each list is valid tables candidates
+    """
+
+    # get vertical intervals
     interval_tree = AIList()
-    [interval_tree.add(line[0].y, line[1].y) for line in vertical_lines]
+    [interval_tree.add(line[0].y, line[1].y) for line in vertical_segments]
 
     vertical_merged_interval = interval_tree.merge(gap=1)
 
@@ -17,25 +54,25 @@ def get_tables_candidates(vertical_lines, horizontal_lines):
     for vertical_interval in vertical_merged_interval:
         interval_group[vertical_interval.start, vertical_interval.end] = []
 
-        for line in vertical_lines:
+        for segment in vertical_segments:
             if (
-                line[0].y >= vertical_interval.start
-                and line[1].y <= vertical_interval.end
+                segment[0].y >= vertical_interval.start
+                and segment[1].y <= vertical_interval.end
             ):
                 interval_group[vertical_interval.start, vertical_interval.end].append(
-                    line
+                    segment
                 )
 
-        for line in horizontal_lines:
+        for segment in horizontal_segments:
             if (
-                line[0].y >= vertical_interval.start
-                and line[1].y <= vertical_interval.end
+                segment[0].y >= vertical_interval.start
+                and segment[1].y <= vertical_interval.end
             ):
                 interval_group[vertical_interval.start, vertical_interval.end].append(
-                    line
+                    segment
                 )
 
-        # get horizontal interval from each group
+        # get horizontal intervals from each group
         interval_tree = AIList()
         [
             interval_tree.add(line[0].x, line[1].x)
@@ -47,12 +84,14 @@ def get_tables_candidates(vertical_lines, horizontal_lines):
         for horizontal_interval in horizontal_merged_interval:
             table_candidate = []
 
-            for line in interval_group[vertical_interval.start, vertical_interval.end]:
+            for segment in interval_group[
+                vertical_interval.start, vertical_interval.end
+            ]:
                 if (
-                    line[0].x >= horizontal_interval.start
-                    and line[1].x <= horizontal_interval.end
+                    segment[0].x >= horizontal_interval.start
+                    and segment[1].x <= horizontal_interval.end
                 ):
-                    table_candidate.append(line)
+                    table_candidate.append(segment)
 
             # We make sure that every table candidate have at least 4 lines
             # Which is the bare minimum to create a single cell
@@ -64,7 +103,19 @@ def get_tables_candidates(vertical_lines, horizontal_lines):
     return tables_candidate
 
 
-def create_table(intersections, horizontal_lines, vertical_lines):
+def create_table(
+    intersections: dict[tuple[list[tuple[Point, Point]], list[tuple[Point, Point]]]],
+    horizontal_segments: list[tuple[Point, Point]],
+    vertical_segments: list[tuple[Point, Point]],
+) -> Table:
+    """
+    Create a Table object from segments and intersections
+
+    :param intersections: dict of intersections point and vertical|horizontal segments associated
+    :param horizontal_segments: list of horizontal segments
+    :param vertical_segments: list of vertical segments
+    :return:
+    """
     intersections = [
         intersection
         for intersection in sorted(intersections, key=lambda point: (point.y, point.x))
@@ -73,24 +124,37 @@ def create_table(intersections, horizontal_lines, vertical_lines):
     table = Table(
         intersections=intersections,
         rect=Rect(intersections[0], intersections[-1]),
-        horizontal_lines=horizontal_lines,
-        vertical_lines=vertical_lines,
+        horizontal_segments=horizontal_segments,
+        vertical_segments=vertical_segments,
     )
 
     return table
 
 
-def process_table(page, table, intersections_info):
+def process_table(
+    page: Page,
+    table: Table,
+    intersections: dict[tuple[list[tuple[Point, Point]], list[tuple[Point, Point]]]],
+) -> Union[Table, None]:
     """
+    This function process each Table object by finding Cell from segments coordinate and then extracting
+    Text span for each Cell
+
+    it also determine the rotation of the Table based on text orientation ratio in the Table
+
+    Legend :
     tl => top left
     tr => top right
     bl => bottom left
     br => bottom right
+
+    :param page: Page Object
+    :param table: Table Object
+    :param intersections: dict of intersections point and vertical|horizontal segments associated
+    :return:
     """
 
-    rotated_span = {}
-    rotated_span[Rotation.unrotated.value] = 0
-    rotated_span[Rotation.rotated_90.value] = 0
+    rotated_span = {Rotation.unrotated.value: 0, Rotation.rotated_90.value: 0}
 
     text = page.get_text(
         "dict", flags=TEXTFLAGS_DICT & ~TEXT_PRESERVE_IMAGES, clip=table.rect
@@ -102,6 +166,7 @@ def process_table(page, table, intersections_info):
     for index, row in table.intersections_df.groupby("y"):
         rows.append(row.to_dict(orient="records"))
 
+    # Each row is a group of intersection point
     for row_index, row in enumerate(rows):
         # Stopping one row before the last row because
         # the last row is always the bottom of the table
@@ -118,18 +183,19 @@ def process_table(page, table, intersections_info):
                 tl = intersection
 
             tr = row[intersection_index + 1]
-            tl_intersection_line = intersections_info[tl["x"], tl["y"]]
-            tr_intersection_line = intersections_info[tr["x"], tr["y"]]
+            tl_intersection_line = intersections[tl["x"], tl["y"]]
+            tr_intersection_line = intersections[tr["x"], tr["y"]]
 
             # if tl and tr point are the same horizontal_line
             if tl_intersection_line[1] == tr_intersection_line[1]:
-                bl, br = find_intersection_correspondance(
-                    tl, tr, rows, row_index, intersections_info
+                bl, br = find_bottom_cell_coordinate(
+                    tl, tr, rows, row_index, intersections
                 )
             else:
                 tl = None
                 continue
 
+            # A Cell is valid only if we found tl, tr, bl and br coordinate
             if not bl and not br:
                 continue
 
@@ -156,7 +222,7 @@ def process_table(page, table, intersections_info):
 
             tl = None
 
-    ############## HANDLE BAD TABLE ######################
+    # HANDLE BAD TABLE #
     total_cell = 0
     empty_cell = 0
     for row in table.cells:
@@ -173,7 +239,6 @@ def process_table(page, table, intersections_info):
     # if there is only empty cell in the table, it is not a valid table
     if empty_cell_ratio == 1:
         return None
-    #######################################################
     else:
         table.match_row_size_sum()
         table.rotation = max(rotated_span, key=rotated_span.get)
@@ -182,21 +247,38 @@ def process_table(page, table, intersections_info):
     return table
 
 
-def find_intersection_correspondance(
-    tl, tr, intersection_rows, row_index, intersections_info
-):
+def find_bottom_cell_coordinate(
+    tl: dict[str],
+    tr: dict[str],
+    rows: list[list[dict[str]]],
+    row_index: int,
+    intersections: dict[tuple[list[tuple[Point, Point]], list[tuple[Point, Point]]]],
+) -> Union[tuple[dict[str], dict[str]], tuple[None, None]]:
     """
+    This function try to find the bottom (bl, br) coordinate of a Cell based on top (tl, tr) coordinate
+
+    Legend :
+
     tl => top left
     tr => top right
     bl => bottom left
     br => bottom right
+
+    :param tl: dict containing a x, y coordinate information
+    :param tr: dict containing a x, y coordinate information
+    :param rows: list of list of dict containing a x, y coordinate information representing a row in the Table
+    :param row_index: Index of the current row we try to find the bottom coordinate
+    :param intersections: dict of intersections point and vertical|horizontal segments associated
+    :return: The bottom cell coordinate if a match is found, else None
     """
     bl = None
     br = None
 
     # Starting to search for corresponding bl / br at row_index + 1 because we always
     # match a row with the row below it
-    for row in intersection_rows[row_index + 1 :]:
+
+    # Each row is a group of intersection point
+    for row in rows[row_index + 1 :]:
         for intersection in row:
 
             if tl["x"] <= intersection["x"] < tr["x"] and not bl:
@@ -206,11 +288,11 @@ def find_intersection_correspondance(
                 br = intersection
 
             if br and bl:
-                tl_intersection_line = intersections_info[tl["x"], tl["y"]]
-                tr_intersection_line = intersections_info[tr["x"], tr["y"]]
+                tl_intersection_line = intersections[tl["x"], tl["y"]]
+                tr_intersection_line = intersections[tr["x"], tr["y"]]
 
-                bl_intersection_line = intersections_info[bl["x"], bl["y"]]
-                br_intersection_line = intersections_info[br["x"], br["y"]]
+                bl_intersection_line = intersections[bl["x"], bl["y"]]
+                br_intersection_line = intersections[br["x"], br["y"]]
 
                 # if bl and br point are on the same horizontal_line
                 # if tl and bl point are on the same vertical_line

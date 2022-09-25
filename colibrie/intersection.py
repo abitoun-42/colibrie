@@ -8,7 +8,7 @@ def get_intersections(
     vertical_segments: list[tuple[Point, Point]],
 ) -> dict[tuple[list[tuple[Point, Point]], list[tuple[Point, Point]]]]:
     """
-    This function found every intersections point found between horizontal and
+    This function find every intersections point between horizontal and
     vertical segments
 
     :param horizontal_segments: list of horizontal segments

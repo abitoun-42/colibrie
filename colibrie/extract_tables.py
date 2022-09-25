@@ -102,11 +102,10 @@ def extract_tables(filepath: str, debug_mode: bool = False) -> list[Table]:
             if not len(intersections) >= 6:
                 continue
 
-            # CREATE TABLE LIST #
+            # CREATE TABLE #
             table = create_table(intersections, horizontal_segments, vertical_segments)
 
             # FILL TABLE #
-
             table = process_table(page, table, intersections)
 
             if not table:
