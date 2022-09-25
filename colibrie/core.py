@@ -12,64 +12,14 @@ from PIL import Image, ImageDraw
 from enum import Enum
 
 
-class TableList(object):
-    """Defines a list of core.Table objects. Each table can
-    be accessed using its index.
-
-    Attributes
-    ----------
-    n : int
-        Number of tables in the list.
-
-    """
-
-    def __init__(self, tables):
-        self._tables = tables
-
-    def __repr__(self):
-        return f"<{self.__class__.__name__} n={self.n}>"
-
-    def __len__(self):
-        return len(self._tables)
-
-    def __getitem__(self, idx):
-        return self._tables[idx]
-
-    @property
-    def n(self):
-        return len(self)
-
-
 class Table(object):
-    """Defines a table with coordinates relative to a left-bottom
+    """
+    Defines a table with coordinates relative to a left-bottom
     origin. (PDF coordinate space)
-
-    Parameters
-    ----------
-    cols : list
-        List of tuples representing column x-coordinates in increasing
-        order.
-    rows : list
-        List of tuples representing row y-coordinates in decreasing
-        order.
-
-    Attributes
-    ----------
-    df : :class:`pandas.DataFrame`
-    shape : tupl
-        Shape of the table.
-    accuracy : float
-        Accuracy with which text was assigned to the cell.
-    whitespace : float
-        Percentage of whitespace in the table.
-    order : int
-        Table number on PDF page.
-    page : int
-        PDF page number.
-
     """
 
-    def __init__(self, intersections, rect, horizontal_lines, vertical_lines):
+    def __init__(self, intersections, rect, horizontal_segments, vertical_segments):
+        self.rotation = None
         self.rect = rect
         self.intersections = intersections
 
@@ -77,8 +27,8 @@ class Table(object):
             [[point.x, point.y] for point in self.intersections], columns=["x", "y"]
         )
 
-        self.horizontal_lines = horizontal_lines
-        self.vertical_lines = vertical_lines
+        self.horizontal_lines = horizontal_segments
+        self.vertical_lines = vertical_segments
 
         self.row = {
             row: index

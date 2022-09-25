@@ -1,11 +1,10 @@
 class Rect:
-    """Rect() - all zeros
-    Rect(x0, y0, x1, y1) - 4 coordinates
+    """
+    Class Object to represent a Rectangle coordinates
     """
 
-    def __init__(self, x0, y0, x1, y1):
+    def __init__(self, x0: float, y0: float, x1: float, y1: float):
         self.x0, self.y0, self.x1, self.y1 = x0, y0, x1, y1
-        return None
 
     def __getitem__(self, i):
         return (self.x0, self.y0, self.x1, self.y1)[i]
@@ -18,7 +17,11 @@ class Rect:
 
 
 class Point:
-    def __init__(self, x, y):
+    """
+    Class Object to represent a Point coordinates
+    """
+
+    def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
@@ -28,21 +31,8 @@ class Point:
     def __len__(self):
         return 2
 
-    def __setitem__(self, i, v):
-        v = float(v)
-        if i == 0:
-            self.x = v
-        elif i == 1:
-            self.y = v
-        else:
-            raise IndexError("index out of range")
-        return None
-
     def __repr__(self):
         return "Point" + str(tuple(self))
-
-    def __pos__(self):
-        return Point(self)
 
     def __neg__(self):
         return Point(-self.x, -self.y)
