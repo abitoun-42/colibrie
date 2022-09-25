@@ -26,7 +26,10 @@ def get_intersections(
             point_c, point_d = vertical_segment
             intersection_point = intersect(point_a, point_b, point_c, point_d)
             if intersection_point:
-                intersections[intersection_point] = (vertical_segment, horizontal_segment)
+                intersections[intersection_point] = (
+                    vertical_segment,
+                    horizontal_segment,
+                )
 
     adjust_segments_length(vertical_segments, "vertical", revert=True)
     adjust_segments_length(horizontal_segments, "horizontal", revert=True)

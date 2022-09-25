@@ -1,7 +1,7 @@
 import fitz
 
 from colibrie.tables import create_table, process_table, get_tables_candidates
-
+from colibrie.core import Table
 from colibrie.intersection import get_intersections
 
 from colibrie.segments import (
@@ -16,13 +16,13 @@ from colibrie.segments import (
 )
 
 
-def extract_tables(filepath, debug_mode=False):
+def extract_tables(filepath: str, debug_mode: bool = False) -> list[Table]:
     """
-    :param: preserve_span: bool
-        give a possibility to speed_up the execution
-        by not preserving information about text position and only keeping
-        the text content, can be useful for those with proper table aligned that
-        do not need to do extra work with it
+    This is the core function of Colibrie
+
+    :param filepath: the Path of a PDF file with tables to extract
+    :param debug_mode: If set to true, a debug object will be assign to each tables
+    :return: List of Tables object
     """
 
     doc = fitz.Document(filepath)
@@ -95,9 +95,7 @@ def extract_tables(filepath, debug_mode=False):
 
             # GET INTERSECTIONS #
 
-            intersections = get_intersections(
-                horizontal_segments, vertical_segments
-            )
+            intersections = get_intersections(horizontal_segments, vertical_segments)
 
             # If there is not a least 6 intersections point, it mean there is less than 2 cells
             # and it is not a valid table
