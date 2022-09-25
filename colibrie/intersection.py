@@ -20,13 +20,13 @@ def get_intersections(
     adjust_segments_length(vertical_segments, "vertical")
     adjust_segments_length(horizontal_segments, "horizontal")
 
-    for horizontal_line in horizontal_segments:
-        for vertical_line in vertical_segments:
-            point_a, point_b = horizontal_line
-            point_c, point_d = vertical_line
+    for horizontal_segment in horizontal_segments:
+        for vertical_segment in vertical_segments:
+            point_a, point_b = horizontal_segment
+            point_c, point_d = vertical_segment
             intersection_point = intersect(point_a, point_b, point_c, point_d)
             if intersection_point:
-                intersections[intersection_point] = (vertical_line, horizontal_line)
+                intersections[intersection_point] = (vertical_segment, horizontal_segment)
 
     adjust_segments_length(vertical_segments, "vertical", revert=True)
     adjust_segments_length(horizontal_segments, "horizontal", revert=True)
