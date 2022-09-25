@@ -2,7 +2,7 @@ import fitz
 
 from colibrie.tables import create_table, process_table, get_tables_candidates
 
-from colibrie.intersection import get_intersection_between_horizontal_and_vertical_lines
+from colibrie.intersection import get_intersections
 
 from colibrie.segments import (
     get_segments,
@@ -95,7 +95,7 @@ def extract_tables(filepath, debug_mode=False):
 
             # GET INTERSECTIONS #
 
-            intersections = get_intersection_between_horizontal_and_vertical_lines(
+            intersections = get_intersections(
                 horizontal_segments, vertical_segments
             )
 
