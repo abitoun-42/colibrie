@@ -25,22 +25,22 @@ def get_text_in_cell(rect, text):
     for block in text.get("blocks"):
         bbox = block["bbox"]
         if is_rectangle_overlap(
-            [bbox[0], bbox[1], bbox[2], bbox[3]], [rect.x0, rect.y0, rect.x1, rect.y1]
+            (bbox[0], bbox[1], bbox[2], bbox[3]), (rect.x0, rect.y0, rect.x1, rect.y1)
         ):
 
             for line in block.get("lines"):
                 bbox = line["bbox"]
                 if is_rectangle_overlap(
-                    [bbox[0], bbox[1], bbox[2], bbox[3]],
-                    [rect.x0, rect.y0, rect.x1, rect.y1],
+                    (bbox[0], bbox[1], bbox[2], bbox[3]),
+                    (rect.x0, rect.y0, rect.x1, rect.y1),
                 ):
 
                     for span in line.get("spans"):
                         bbox = span["bbox"]
 
                         if is_rectangle_contained(
-                            [rect.x0, rect.y0, rect.x1, rect.y1],
-                            [bbox[0], bbox[1], bbox[2], bbox[3]],
+                            (rect.x0, rect.y0, rect.x1, rect.y1),
+                            (bbox[0], bbox[1], bbox[2], bbox[3]),
                         ):
                             span["dir"] = line["dir"]
                             text_in_cell.append(span)
