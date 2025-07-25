@@ -219,7 +219,10 @@ def merge_vertical_segment(
 
     for x, group in vertical_segments_group.items():
         interval_tree = AIList()
-        [interval_tree.add(line[0].y, line[1].y) for line in group]
+        [
+            interval_tree.add(int(round(line[0].y)), int(round(line[1].y)))
+            for line in group
+        ]
 
         merged_interval = interval_tree.merge(gap=5)
 
@@ -256,7 +259,10 @@ def merge_horizontal_segments(
 
     for y, group in horizontal_segments_group.items():
         interval_tree = AIList()
-        [interval_tree.add(segment[0].x, segment[1].x) for segment in group]
+        [
+            interval_tree.add(int(round(segment[0].x)), int(round(segment[1].x)))
+            for segment in group
+        ]
 
         merged_interval = interval_tree.merge(gap=5)
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "colibrie"
-version = "1.2"
+version = "1.2.3"
 description = "Colibrie is a blazing fast tool to extract tables from PDFs"
 authors = ["Alexandre Bitoun <alexandre.bitoun@outlook.fr>"]
 readme = "README.md"
@@ -11,14 +11,13 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8"
-Cython = "^0.29.32"
+python = ">=3.10,<4.0"
+Cython = "^3.1.2"
 PyMuPDF = "^1.20.2"
 numpy = "^1.23.3"
-pandas = "^1.5.0"
-Pillow = "^9.2.0"
-ailist = "^1.0.4"
-
+pandas = "^2.0.0"
+Pillow = "^10.3.0"
+ailist = "^2.0.2"
 
 [build-system]
 requires = ["poetry-core"]

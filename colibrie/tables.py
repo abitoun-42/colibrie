@@ -44,7 +44,11 @@ def get_tables_candidates(
 
     # get vertical intervals
     interval_tree = AIList()
-    [interval_tree.add(line[0].y, line[1].y) for line in vertical_segments]
+    # AIList expects integer coordinates; cast y-values to int to avoid TypeError
+    [
+        interval_tree.add(int(round(line[0].y)), int(round(line[1].y)))
+        for line in vertical_segments
+    ]
 
     vertical_merged_interval = interval_tree.merge(gap=1)
 
@@ -75,7 +79,9 @@ def get_tables_candidates(
         # get horizontal intervals from each group
         interval_tree = AIList()
         [
-            interval_tree.add(line[0].x, line[1].x)
+            interval_tree.add(
+                int(round(line[0].x)), int(round(line[1].x))
+            )
             for line in interval_group[vertical_interval.start, vertical_interval.end]
         ]
 
@@ -121,9 +127,15 @@ def create_table(
         for intersection in sorted(intersections, key=lambda point: (point.y, point.x))
     ]
 
+    # Determine bounding rectangle coordinates
+    min_x = min(p.x for p in intersections)
+    min_y = min(p.y for p in intersections)
+    max_x = max(p.x for p in intersections)
+    max_y = max(p.y for p in intersections)
+
     table = Table(
         intersections=intersections,
-        rect=Rect(intersections[0], intersections[-1]),
+        rect=Rect(min_x, min_y, max_x, max_y),
         horizontal_segments=horizontal_segments,
         vertical_segments=vertical_segments,
     )
@@ -200,7 +212,7 @@ def process_table(
                 continue
 
             cell = Cell(
-                rect=Rect(Point(tl["x"], tl["y"]), Point(br["x"], br["y"])),
+                rect=Rect(tl["x"], tl["y"], br["x"], br["y"]),
                 row_size=table.row[br["y"]] - table.row[tl["y"]],
                 col_size=table.col[br["x"]] - table.col[tl["x"]],
             )
